@@ -3,11 +3,13 @@ import './App.css'
 import { WalletConnector } from '@/components/WalletConnector'
 import { DashboardLayout } from '@/components/DashboardLayout'
 import { GroupCreationForm } from '@/components/GroupCreationForm'
-import { GroupCard } from '@/components/GroupCard'
-import { MemberList } from '@/components/MemberList'
-import { ContributionForm } from '@/components/ContributionForm'
+import { GroupsList } from '@/components/GroupsList'
+import { GroupDetailPage } from '@/components/GroupDetailPage'
+import { GroupAnalytics } from '@/components/GroupAnalytics'
+import { ResponsiveLayout } from '@/components/ResponsiveLayout'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
-type ViewType = 'dashboard' | 'create' | 'detail'
+type ViewType = 'dashboard' | 'create' | 'detail' | 'analytics' | 'responsive'
 
 function App() {
   const [currentView, setCurrentView] = useState<ViewType>('dashboard')
@@ -61,76 +63,51 @@ function App() {
             >
               Group Detail (Demo)
             </button>
+            <button
+              onClick={() => setCurrentView('analytics')}
+              className={`px-4 py-2 rounded font-semibold transition ${
+                currentView === 'analytics'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              Analytics
+            </button>
+            <button
+              onClick={() => setCurrentView('responsive')}
+              className={`px-4 py-2 rounded font-semibold transition ${
+                currentView === 'responsive'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              Responsive Demo
+            </button>
           </div>
         </div>
 
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {currentView === 'dashboard' && <DashboardLayout />}
-
-          {currentView === 'create' && (
-            <div className="flex justify-center">
-              <GroupCreationForm />
-            </div>
-          )}
-
-          {currentView === 'detail' && (
-            <div className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <GroupCard
-                  groupId="group-1"
-                  groupName="Market Women Ajo"
-                  memberCount={8}
-                  maxMembers={10}
-                  nextPayout="Feb 28, 2026"
-                  totalContributions={4000}
-                  status="active"
-                />
-                <GroupCard
-                  groupId="group-2"
-                  groupName="Tech Team Savings"
-                  memberCount={5}
-                  maxMembers={5}
-                  nextPayout="Mar 5, 2026"
-                  totalContributions={2500}
-                  status="active"
-                />
-                <GroupCard
-                  groupId="group-3"
-                  groupName="Community Fund"
-                  memberCount={10}
-                  maxMembers={10}
-                  nextPayout="Completed"
-                  totalContributions={5000}
-                  status="completed"
-                />
+          <ErrorBoundary>
+            {currentView === 'dashboard' && (
+              <div className="space-y-8">
+                <DashboardLayout />
+                <GroupsList groups={[]} />
               </div>
+            )}
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2">
-                  <MemberList
-                    groupId="group-1"
-                    members={[
-                      {
-                        address: 'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-                        joinedDate: '2024-01-15',
-                        contributions: 1500,
-                        status: 'active',
-                      },
-                      {
-                        address: 'GBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-                        joinedDate: '2024-01-20',
-                        contributions: 1500,
-                        status: 'active',
-                      },
-                    ]}
-                  />
-                </div>
-
-                <ContributionForm groupId="group-1" contributionAmount={500} />
+            {currentView === 'create' && (
+              <div className="flex justify-center">
+                <GroupCreationForm />
               </div>
-            </div>
-          )}
+            )}
+
+            {currentView === 'detail' && <GroupDetailPage groupId="group-1" />}
+
+            {currentView === 'analytics' && <GroupAnalytics />}
+
+            {currentView === 'responsive' && <ResponsiveLayout />}
+          </ErrorBoundary>
         </main>
 
         {/* Footer */}

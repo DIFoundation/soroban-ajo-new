@@ -1,0 +1,62 @@
+// Issue #32: Implement error boundary and error handling
+// Complexity: High (200 pts)
+// Status: Placeholder
+
+import React from 'react'
+
+interface ErrorBoundaryProps {
+  children: React.ReactNode
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean
+  error?: Error
+}
+
+export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // TODO: Log error to monitoring service (Sentry, LogRocket, etc.)
+    console.error('ErrorBoundary caught error:', error, errorInfo)
+  }
+
+  handleReload = () => {
+    window.location.reload()
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-[400px] flex items-center justify-center">
+          <div className="text-center max-w-md">
+            <h2 className="text-2xl font-bold text-red-600 mb-2">Something went wrong</h2>
+            <p className="text-gray-600 mb-4">
+              An unexpected error occurred. Please reload the page or contact support.
+            </p>
+            {this.state.error && (
+              <pre className="text-xs text-gray-500 bg-gray-100 p-2 rounded mb-4 overflow-auto">
+                {this.state.error.message}
+              </pre>
+            )}
+            <button
+              onClick={this.handleReload}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      )
+    }
+
+    return this.props.children
+  }
+}
