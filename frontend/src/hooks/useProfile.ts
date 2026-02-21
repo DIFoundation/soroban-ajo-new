@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { create } from 'zustand'
 import { useAuth } from './useAuth'
-import type { UserProfile, UserPreferences, UserStats, ActivityItem } from '@/types/profile'
+import type { UserProfile, UserPreferences, ActivityItem } from '@/types/profile'
 
 interface ProfileStore {
   profile: UserProfile | null

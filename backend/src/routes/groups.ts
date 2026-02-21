@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { GroupsController } from '../controllers/groupsController'
+import { webhookMiddleware } from '../middleware/webhook'
 
 const router = Router()
 const controller = new GroupsController()
@@ -15,14 +16,14 @@ router.get('/', controller.listGroups.bind(controller))
 // GET /api/groups/:id - Get group by ID
 router.get('/:id', controller.getGroup.bind(controller))
 
-// POST /api/groups - Create new group
-router.post('/', controller.createGroup.bind(controller))
+// POST /api/groups - Create new group (with webhook)
+router.post('/', controller.createGroup.bind(controller), webhookMiddleware.afterGroupCreated)
 
-// POST /api/groups/:id/join - Join a group
-router.post('/:id/join', controller.joinGroup.bind(controller))
+// POST /api/groups/:id/join - Join a group (with webhook)
+router.post('/:id/join', controller.joinGroup.bind(controller), webhookMiddleware.afterMemberJoined)
 
-// POST /api/groups/:id/contribute - Make contribution
-router.post('/:id/contribute', controller.contribute.bind(controller))
+// POST /api/groups/:id/contribute - Make contribution (with webhook)
+router.post('/:id/contribute', controller.contribute.bind(controller), webhookMiddleware.afterContribution)
 
 // GET /api/groups/:id/members - Get group members
 router.get('/:id/members', controller.getMembers.bind(controller))

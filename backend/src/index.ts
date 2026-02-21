@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import { errorHandler } from './middleware/errorHandler'
 import { groupsRouter } from './routes/groups'
 import { healthRouter } from './routes/health'
+import { webhooksRouter } from './routes/webhooks'
 
 dotenv.config()
 
@@ -25,14 +26,14 @@ app.use(express.urlencoded({ extended: true }))
 // Routes
 app.use('/health', healthRouter)
 app.use('/api/groups', groupsRouter)
+app.use('/api/webhooks', webhooksRouter)
 
 // Error handling
 app.use(errorHandler)
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Backend server running on port ${PORT}`)
-  console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`)
+  // Backend server started
 })
 
 export default app

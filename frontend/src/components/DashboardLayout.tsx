@@ -13,7 +13,7 @@ import { useAuthContext } from '@/context/AuthContext'
 export const DashboardLayout: React.FC = () => {
   // --- NEW: Progressive Loading State (#62) ---
   const [isLoading, setIsLoading] = useState(true)
-  const { isAuthenticated, address } = useAuthContext()
+  const { isAuthenticated } = useAuthContext()
   const pathname = usePathname()
 
   // Simulating a network request (e.g., fetching from Soroban smart contract)

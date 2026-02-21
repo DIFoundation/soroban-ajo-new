@@ -3,8 +3,8 @@
 
 echo "🔍 Running pre-commit checks..."
 
-# Check for console.log statements in source files only
-if git diff --cached --name-only | grep -E '\.(ts|tsx|js|jsx)$' | grep -v 'node_modules' | xargs grep -n "console\.\(log\|debug\|info\)" 2>/dev/null; then
+# Check for console.log statements in source files only (exclude examples and node_modules)
+if git diff --cached --name-only | grep -E '\.(ts|tsx|js|jsx)$' | grep -v 'node_modules' | grep -v 'examples/' | xargs grep -n "console\.\(log\|debug\|info\)" 2>/dev/null; then
   echo "❌ Error: Found console.log statements. Please remove them before committing."
   exit 1
 fi
