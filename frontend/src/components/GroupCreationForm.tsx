@@ -47,6 +47,8 @@ export const GroupCreationForm: React.FC<GroupCreationFormProps> = ({ onSuccess 
   const errorSummaryRef = useRef<HTMLDivElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const groupNameRef = useRef<HTMLInputElement>(null)
+  
+  const hasErrors = Object.keys(errors).length > 0
 
   // Focus on error summary when errors occur after submission
   useEffect(() => {
@@ -121,6 +123,23 @@ export const GroupCreationForm: React.FC<GroupCreationFormProps> = ({ onSuccess 
     return Object.keys(newErrors).length === 0
   }
 
+  const handleAddMember = () => {
+    if (memberInput.trim() && !formData.invitedMembers.includes(memberInput.trim())) {
+      setFormData({
+        ...formData,
+        invitedMembers: [...formData.invitedMembers, memberInput.trim()]
+      })
+      setMemberInput('')
+    }
+  }
+
+  const handleRemoveMember = (member: string) => {
+    setFormData({
+      ...formData,
+      invitedMembers: formData.invitedMembers.filter(m => m !== member)
+    })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitted(true)
@@ -139,8 +158,7 @@ export const GroupCreationForm: React.FC<GroupCreationFormProps> = ({ onSuccess 
       // 2. Call create_group on Soroban contract
       // 3. Show success notification
       // 4. Redirect to group detail page
-
-      // Call onSuccess callback if provided
+      console.log('Create group:', formData)
       onSuccess?.()
     } catch (err) {
       console.error('Failed to create group:', err)
