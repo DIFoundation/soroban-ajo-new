@@ -145,10 +145,11 @@ export const useWallet = () => {
                     address: publicKey,
                     publicKey,
                 };
-            } catch (err: any) {
+            } catch (err) {
+                const error = err as any;
                 const walletError: WalletError = {
-                    code: err.code || 'CONNECTION_FAILED',
-                    message: err.message || 'Failed to connect to Albedo wallet',
+                    code: error.code || 'CONNECTION_FAILED',
+                    message: error.message || 'Failed to connect to Albedo wallet',
                     walletType: 'albedo',
                 };
                 return {

@@ -6,11 +6,6 @@ import { analytics, trackUserAction } from './analytics'
 import { showNotification } from '../utils/notifications'
 import { cacheService, CacheKeys, CacheTags } from './cache'
 
-<<<<<<< Light/DarkMode-theme
-=======
-const RPC_URL = import.meta.env.VITE_SOROBAN_RPC_URL
-const CONTRACT_ID = import.meta.env.VITE_SOROBAN_CONTRACT_ID
-
 // Cache TTL configurations (in milliseconds)
 const CACHE_TTL = {
   GROUP_STATUS: 30 * 1000, // 30 seconds - frequently changing
@@ -19,7 +14,6 @@ const CACHE_TTL = {
   TRANSACTIONS: 2 * 60 * 1000, // 2 minutes - historical data
 } as const
 
->>>>>>> master
 // Retry configuration
 const MAX_RETRIES = 3
 const INITIAL_RETRY_DELAY = 1000
@@ -447,7 +441,7 @@ export const initializeSoroban = (): SorobanService => {
             }
           )
         } catch (error) {
-          const { message, severity } = classifyError(error)
+          const { severity } = classifyError(error)
           analytics.trackError(error as Error, { operation: 'getUserGroups', userId }, severity)
           throw error
         }

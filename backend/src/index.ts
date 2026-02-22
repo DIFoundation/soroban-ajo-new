@@ -1,11 +1,16 @@
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
-import morgan from 'morgan'
 import dotenv from 'dotenv'
 import { errorHandler } from './middleware/errorHandler'
+import { requestLogger } from './middleware/requestLogger'
+import { setupSwagger } from './middleware/swagger'
+import { logger } from './utils/logger'
 import { groupsRouter } from './routes/groups'
 import { healthRouter } from './routes/health'
+import { webhooksRouter } from './routes/webhooks'
+import { authRouter } from './routes/auth'
+import { setupSwagger } from './swagger'
 
 dotenv.config()
 
@@ -18,21 +23,25 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true
 }))
-app.use(morgan('dev'))
+app.use(requestLogger)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+// API Documentation
+setupSwagger(app)
+
 // Routes
 app.use('/health', healthRouter)
+app.use('/api/auth', authRouter)
 app.use('/api/groups', groupsRouter)
+app.use('/api/webhooks', webhooksRouter)
 
 // Error handling
 app.use(errorHandler)
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Backend server running on port ${PORT}`)
-  console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`)
+  logger.info(`Server started on port ${PORT}`, { env: process.env.NODE_ENV || 'development' })
 })
 
 export default app

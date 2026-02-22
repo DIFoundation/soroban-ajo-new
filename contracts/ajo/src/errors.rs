@@ -58,4 +58,10 @@ pub enum AjoError {
     
     /// Negative amounts aren't allowed for contributions.
     ContributionAmountNegative = 17,
+    
+    /// This group has been cancelled by its creator.
+    GroupCancelled = 19,
+    
+    /// The contract has already been initialized.
+    AlreadyInitialized = 20,
 }

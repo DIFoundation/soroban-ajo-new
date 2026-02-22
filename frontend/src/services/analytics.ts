@@ -7,6 +7,9 @@ export interface AnalyticsEvent {
   value?: number
   timestamp?: number
   metadata?: Record<string, any>
+  timestamp: number
+  sessionId: string
+  userId?: string
 }
 
 export interface PerformanceMetric {
@@ -63,8 +66,8 @@ class AnalyticsService {
   }
 
   // Track user actions
-  trackEvent(event: AnalyticsEvent) {
-    const enrichedEvent = {
+  trackEvent(event: Omit<AnalyticsEvent, 'timestamp' | 'sessionId' | 'userId'>) {
+    const enrichedEvent: AnalyticsEvent = {
       ...event,
       timestamp: Date.now(),
       sessionId: this.sessionId,
