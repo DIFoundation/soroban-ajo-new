@@ -3,28 +3,56 @@
 // Status: Placeholder
 
 import React, { useState } from 'react'
-import { MemberList } from './MemberList'
 import { ContributionForm } from './ContributionForm'
+import { EmptyMemberState } from './EmptyMemberState'
+import { MemberList } from './MemberList'
 import { TransactionHistory } from './TransactionHistory'
 
 type TabKey = 'overview' | 'members' | 'history' | 'settings'
 
-interface GroupDetailPageProps {
-  groupId: string
+interface Member {
+  id: string
+  address: string
 }
 
-export const GroupDetailPage: React.FC<GroupDetailPageProps> = ({ groupId }) => {
+interface GroupDetailPageProps {
+  groupId: string
+  members?: Member[]
+  onShareLink?: () => void
+  onCopyLink?: () => void
+}
+
+export const GroupDetailPage: React.FC<GroupDetailPageProps> = ({
+  groupId,
+  members = [],
+  onShareLink,
+  onCopyLink,
+}) => {
   const [activeTab, setActiveTab] = useState<TabKey>('overview')
 
   // TODO: Fetch group details from smart contract
   // TODO: Fetch member list and transaction history
+
+  const handleShareLink = () => {
+    if (onShareLink) {
+      onShareLink()
+    }
+  }
+
+  const handleCopyLink = () => {
+    if (onCopyLink) {
+      onCopyLink()
+    }
+  }
 
   return (
     <div className="space-y-6">
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow dark:shadow-slate-900/50 p-6 border border-gray-100 dark:border-slate-700">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Market Women Ajo</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100">
+              Market Women Ajo
+            </h2>
             <p className="text-gray-600 dark:text-slate-400">Group ID: {groupId}</p>
           </div>
           <span className="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 dark:bg-emerald-900/40 text-green-800 dark:text-emerald-300">
@@ -77,8 +105,12 @@ export const GroupDetailPage: React.FC<GroupDetailPageProps> = ({ groupId }) => 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 space-y-4">
                 <div className="bg-gray-50 dark:bg-slate-700/50 p-4 rounded border border-gray-100 dark:border-slate-600">
-                  <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-slate-100">Next Payout</h3>
-                  <p className="text-2xl font-bold text-blue-600 dark:text-indigo-400">Feb 28, 2026</p>
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-slate-100">
+                    Next Payout
+                  </h3>
+                  <p className="text-2xl font-bold text-blue-600 dark:text-indigo-400">
+                    Feb 28, 2026
+                  </p>
                 </div>
                 <TransactionHistory groupId={groupId} transactions={[]} />
               </div>
@@ -87,16 +119,22 @@ export const GroupDetailPage: React.FC<GroupDetailPageProps> = ({ groupId }) => 
           )}
 
           {activeTab === 'members' && (
-            <MemberList groupId={groupId} members={[]} />
+            <>
+              {members.length === 0 ? (
+                <EmptyMemberState onShareLink={handleShareLink} onCopyLink={handleCopyLink} />
+              ) : (
+                <MemberList groupId={groupId} members={members} />
+              )}
+            </>
           )}
 
-          {activeTab === 'history' && (
-            <TransactionHistory groupId={groupId} transactions={[]} />
-          )}
+          {activeTab === 'history' && <TransactionHistory groupId={groupId} transactions={[]} />}
 
           {activeTab === 'settings' && (
             <div className="space-y-4">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100">Group Settings</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100">
+                Group Settings
+              </h3>
               <p className="text-gray-600 dark:text-slate-400">
                 TODO: Add settings for group creator (pause group, update metadata, cancel group)
               </p>

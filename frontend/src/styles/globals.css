@@ -1,3 +1,5 @@
+@import './variables.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -74,16 +76,41 @@ body {
     @apply bg-gray-200 dark:bg-gray-700 animate-pulse;
   }
 
-  @keyframes pulse {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
+  /* Truncate Multi-line */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
-  .animate-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Dark Mode Overrides */
+@media (prefers-color-scheme: dark) {
+  .card {
+    @apply bg-surface-900 border-surface-800;
+  }
+
+  .input {
+    @apply bg-surface-900 border-surface-700 text-surface-50;
+  }
+
+  .btn-secondary {
+    @apply bg-surface-800 text-surface-50 hover:bg-surface-700 border-surface-700;
+  }
+
+  .btn-ghost {
+    @apply hover:bg-surface-800 active:bg-surface-700;
+  }
+
+  .skeleton {
+    @apply bg-surface-800;
   }
 }

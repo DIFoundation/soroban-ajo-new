@@ -1,14 +1,13 @@
-// Issue #28: Build dashboard with groups list
-// Complexity: Medium (150 pts)
-// Status: Complete - Premium styled list view with sortable columns
-
-import React from 'react'
+import { SortDirection, SortField } from '@/hooks/useDashboard'
 import { Group } from '@/types'
-import { SortField, SortDirection } from '@/hooks/useDashboard'
+import React from 'react'
 
 interface GroupsListProps {
   groups?: Group[]
   isLoading?: boolean
+  sortField?: SortField
+  sortDirection?: SortDirection
+  onSort?: (field: SortField) => void
   sortField?: SortField
   sortDirection?: SortDirection
   onSort?: (field: SortField) => void
@@ -17,24 +16,18 @@ interface GroupsListProps {
 }
 
 export const GroupsList: React.FC<GroupsListProps> = ({
-  groups,
+  fetchGroups,
   isLoading = false,
   sortField = 'name',
   sortDirection = 'asc',
   onSort = () => {},
   onGroupClick,
-  onJoinGroup
+  onJoinGroup,
 }) => {
   const list = groups ?? []
   const SortIcon = ({ field }: { field: SortField }) => {
-    if (sortField !== field) {
-      return <span className="sort-indicator-inactive">↕</span>
-    }
-    return (
-      <span className="sort-indicator-active">
-        {sortDirection === 'asc' ? '↑' : '↓'}
-      </span>
-    )
+    if (sortField !== field) return <span className="sort-indicator-inactive">↕</span>
+    return <span className="sort-indicator-active">{sortDirection === 'asc' ? '↑' : '↓'}</span>
   }
 
   const statusConfig: Record<string, { badge: string; dot: string; label: string }> = {
@@ -55,29 +48,53 @@ export const GroupsList: React.FC<GroupsListProps> = ({
     },
   }
 
-  if (isLoading) {
+  if (loading || isLoading) {
     return (
       <div className="bg-white dark:bg-slate-800 rounded-2xl border border-surface-200/80 dark:border-slate-700 overflow-hidden">
         <table className="table-premium">
           <thead>
             <tr>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold text-surface-500 dark:text-slate-400 uppercase tracking-wider">Name</th>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">Members</th>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">Contributions</th>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">Next Payout</th>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">Status</th>
-              <th className="px-5 py-3.5 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">Actions</th>
+              <th className="px-5 py-3.5 text-left text-xs font-semibold text-surface-500 dark:text-slate-400 uppercase tracking-wider">
+                Name
+              </th>
+              <th className="px-5 py-3.5 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">
+                Members
+              </th>
+              <th className="px-5 py-3.5 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">
+                Contributions
+              </th>
+              <th className="px-5 py-3.5 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">
+                Next Payout
+              </th>
+              <th className="px-5 py-3.5 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-5 py-3.5 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
             {[...Array(5)].map((_, i) => (
               <tr key={i} className="animate-pulse-soft" style={{ animationDelay: `${i * 100}ms` }}>
-                <td className="px-5 py-4"><div className="skeleton h-4 w-32 rounded-md" /></td>
-                <td className="px-5 py-4"><div className="skeleton h-4 w-16 rounded-md" /></td>
-                <td className="px-5 py-4"><div className="skeleton h-4 w-20 rounded-md" /></td>
-                <td className="px-5 py-4"><div className="skeleton h-4 w-24 rounded-md" /></td>
-                <td className="px-5 py-4"><div className="skeleton h-6 w-16 rounded-full" /></td>
-                <td className="px-5 py-4"><div className="skeleton h-8 w-20 rounded-lg" /></td>
+                <td className="px-5 py-4">
+                  <div className="skeleton h-4 w-32 rounded-md" />
+                </td>
+                <td className="px-5 py-4">
+                  <div className="skeleton h-4 w-16 rounded-md" />
+                </td>
+                <td className="px-5 py-4">
+                  <div className="skeleton h-4 w-20 rounded-md" />
+                </td>
+                <td className="px-5 py-4">
+                  <div className="skeleton h-4 w-24 rounded-md" />
+                </td>
+                <td className="px-5 py-4">
+                  <div className="skeleton h-6 w-16 rounded-full" />
+                </td>
+                <td className="px-5 py-4">
+                  <div className="skeleton h-8 w-20 rounded-lg" />
+                </td>
               </tr>
             ))}
           </tbody>
@@ -111,12 +128,8 @@ export const GroupsList: React.FC<GroupsListProps> = ({
                 Next Payout <SortIcon field="nextPayout" />
               </div>
             </th>
-            <th>
-              Status
-            </th>
-            <th>
-              Actions
-            </th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -130,9 +143,13 @@ export const GroupsList: React.FC<GroupsListProps> = ({
                 onClick={() => onGroupClick?.(group.id)}
               >
                 <td className="whitespace-nowrap">
-                  <div className="text-sm font-semibold text-surface-900 dark:text-slate-100">{group.name}</div>
+                  <div className="text-sm font-semibold text-surface-900 dark:text-slate-100">
+                    {group.name}
+                  </div>
                   {group.description && (
-                    <div className="text-xs text-surface-400 dark:text-slate-500 truncate max-w-xs mt-0.5">{group.description}</div>
+                    <div className="text-xs text-surface-400 dark:text-slate-500 truncate max-w-xs mt-0.5">
+                      {group.description}
+                    </div>
                   )}
                 </td>
                 <td className="whitespace-nowrap">
@@ -168,8 +185,18 @@ export const GroupsList: React.FC<GroupsListProps> = ({
                     }}
                     className="btn-join"
                   >
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                      />
                     </svg>
                     Join
                   </button>

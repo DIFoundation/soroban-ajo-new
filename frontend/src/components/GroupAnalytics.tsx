@@ -85,8 +85,8 @@ export const GroupAnalytics: React.FC = () => {
               <AreaChart data={trendData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--chart-primary)" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="var(--chart-primary)" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="var(--chart-primary)" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="var(--chart-primary)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid-line)" vertical={false} />
@@ -97,6 +97,8 @@ export const GroupAnalytics: React.FC = () => {
                     backgroundColor: 'var(--chart-tooltip-bg)',
                     borderColor: 'var(--chart-tooltip-border)',
                     color: 'var(--chart-tooltip-text)',
+                    borderRadius: '8px',
+                  }}
                     borderRadius: '8px',
                   }}
                 />
@@ -119,7 +121,12 @@ export const GroupAnalytics: React.FC = () => {
                   contentStyle={{
                     backgroundColor: 'var(--chart-tooltip-bg)',
                     borderColor: 'var(--chart-tooltip-border)',
+                  contentStyle={{
+                    backgroundColor: 'var(--chart-tooltip-bg)',
+                    borderColor: 'var(--chart-tooltip-border)',
                     color: 'var(--chart-tooltip-text)',
+                    borderRadius: '8px',
+                  }}
                     borderRadius: '8px',
                   }}
                 />
