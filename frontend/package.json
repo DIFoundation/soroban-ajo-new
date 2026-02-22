@@ -16,11 +16,9 @@
     "axios": "^1.6.0",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
-<<<<<<< HEAD
-    "lucide-react": "^0.575.0",
-=======
     "next": "^14.1.0",
->>>>>>> 545485e03a311afa4a93e0cb0b74ee75536f1544
+    "next-themes": "^0.4.6",
+    "lucide-react": "^0.575.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
