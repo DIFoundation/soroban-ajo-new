@@ -63,11 +63,7 @@ export const viewport: Viewport = {
   ],
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -78,11 +74,13 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Ajo" />
       </head>
       <body className={inter.className}>
-        <Providers>
-          <AppLayout>{children}</AppLayout>
-          <InstallPrompt />
-          <OfflineIndicator />
-        </Providers>
+        <div className="pattern-overlay gradient-mesh min-h-screen">
+          <Providers>
+            <AppLayout>{children}</AppLayout>
+            <InstallPrompt />
+            <OfflineIndicator />
+          </Providers>
+        </div>
       </body>
     </html>
   )
