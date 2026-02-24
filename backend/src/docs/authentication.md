@@ -11,6 +11,7 @@ The Ajo API uses JWT (JSON Web Tokens) for authentication. Authentication is bas
 **Endpoint**: `POST /api/auth/token`
 
 **Request**:
+
 ```json
 {
   "publicKey": "GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -18,6 +19,7 @@ The Ajo API uses JWT (JSON Web Tokens) for authentication. Authentication is bas
 ```
 
 **Response**:
+
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -48,33 +50,33 @@ const response = await fetch('http://localhost:3001/api/auth/token', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    publicKey: 'GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-  })
-});
+    publicKey: 'GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+  }),
+})
 
-const { token } = await response.json();
+const { token } = await response.json()
 
 // 2. Use token in subsequent requests
 const groupsResponse = await fetch('http://localhost:3001/api/groups', {
   headers: {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-});
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  },
+})
 ```
 
 ### cURL
 
 ```bash
 # 1. Get token
-TOKEN=$(curl -X POST http://localhost:3001/api/auth/token \
+AUTH_TOKEN=$(curl -X POST http://localhost:3001/api/auth/token \
   -H "Content-Type: application/json" \
   -d '{"publicKey":"GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"}' \
   | jq -r '.token')
 
 # 2. Use token
 curl http://localhost:3001/api/groups \
-  -H "Authorization: Bearer $TOKEN"
+  -H "Authorization: Bearer $AUTH_TOKEN"
 ```
 
 ## Wallet Integration
@@ -82,31 +84,31 @@ curl http://localhost:3001/api/groups \
 ### Freighter Wallet
 
 ```typescript
-import { isConnected, getPublicKey } from '@stellar/freighter-api';
+import { isConnected, getPublicKey } from '@stellar/freighter-api'
 
 async function authenticate() {
   // Check if Freighter is installed
-  const connected = await isConnected();
+  const connected = await isConnected()
   if (!connected) {
-    throw new Error('Freighter wallet not installed');
+    throw new Error('Freighter wallet not installed')
   }
 
   // Get public key
-  const publicKey = await getPublicKey();
+  const publicKey = await getPublicKey()
 
   // Get JWT token
   const response = await fetch('/api/auth/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ publicKey })
-  });
+    body: JSON.stringify({ publicKey }),
+  })
 
-  const { token } = await response.json();
-  
+  const { token } = await response.json()
+
   // Store token
-  localStorage.setItem('authToken', token);
-  
-  return token;
+  localStorage.setItem('authToken', token)
+
+  return token
 }
 ```
 
@@ -157,6 +159,7 @@ async function authenticate() {
 ## Rate Limiting
 
 Authentication endpoints are rate-limited:
+
 - **Token generation**: 5 requests per hour per IP
 - **Token verification**: 100 requests per 15 minutes per IP
 
@@ -171,15 +174,18 @@ Tokens expire after 7 days. To refresh:
 ## Troubleshooting
 
 ### "Invalid public key format"
+
 - Ensure the public key starts with 'G'
 - Verify the public key is exactly 56 characters
 - Check for any whitespace or special characters
 
 ### "Token expired"
+
 - Request a new token
 - Check system time synchronization
 
 ### "Unauthorized"
+
 - Verify the token is included in the Authorization header
 - Check the token format: `Bearer <token>`
 - Ensure the token hasn't been tampered with
