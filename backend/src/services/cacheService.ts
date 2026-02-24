@@ -15,16 +15,23 @@ export async function getGroupWithCache(groupId: string) {
   }
 
   // Fetch from blockchain
-  const blockchainData = await sorobanService.getGroupInfo(groupId);
-  
+  const blockchainData = await sorobanService.getGroup(groupId);
+  if (!blockchainData) {
+    throw new Error('Group not found on blockchain');
+  }
+
   // Cache it
+  const freqString = blockchainData.frequency || 'monthly';
+  let frequencyInt = 30; // default to 30 days
+  if (freqString === 'daily') frequencyInt = 1;
+  else if (freqString === 'weekly') frequencyInt = 7;
+
   await dbService.upsertGroup(groupId, {
     name: blockchainData.name,
-    contributionAmount: BigInt(blockchainData.contribution_amount),
-    frequency: blockchainData.frequency,
-    maxMembers: blockchainData.max_members,
-    currentRound: blockchainData.current_round,
-    isActive: blockchainData.is_active,
+    contributionAmount: BigInt(blockchainData.contributionAmount),
+    frequency: frequencyInt,
+    maxMembers: blockchainData.maxMembers,
+    isActive: blockchainData.isActive,
   });
 
   return dbService.getGroup(groupId);

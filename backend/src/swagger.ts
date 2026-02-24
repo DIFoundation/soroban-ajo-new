@@ -212,10 +212,7 @@ const swaggerUiOptions = {
 
 export const setupSwagger = (app: Express): void => {
   // Swagger UI
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));
-  
-  // OpenAPI JSON spec
-  app.get('/api-docs.json', (_req, res) => {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));  app.get('/api-docs.json', (_req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
   });

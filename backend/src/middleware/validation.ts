@@ -10,10 +10,10 @@ export function validateRequest(schema: ZodSchema, source: 'body' | 'query' | 'p
     try {
       const data = req[source]
       const validated = await schema.parseAsync(data)
-      
+
       // Replace the request data with validated data
       req[source] = validated
-      
+
       next()
     } catch (error) {
       if (error instanceof ZodError) {
@@ -28,7 +28,7 @@ export function validateRequest(schema: ZodSchema, source: 'body' | 'query' | 'p
         })
         return
       }
-      
+
       // Pass other errors to error handler
       next(error)
     }
@@ -44,15 +44,15 @@ export const commonSchemas = {
     page: z.string().transform(Number).pipe(z.number().int().positive()).default('1'),
     limit: z.string().transform(Number).pipe(z.number().int().positive().max(100)).default('20'),
   }),
-  
+
   // ID parameter
   id: z.object({
     id: z.string().min(1),
   }),
-  
+
   // Stellar address
   stellarAddress: z.string().regex(/^G[A-Z0-9]{55}$/, 'Invalid Stellar address'),
-  
+
   // Amount (in stroops)
   amount: z.number().int().positive(),
 }
@@ -70,12 +70,12 @@ export const groupSchemas = {
     admin: commonSchemas.stellarAddress,
     signedXdr: z.string().optional(),
   }),
-  
+
   join: z.object({
     publicKey: commonSchemas.stellarAddress,
     signedXdr: z.string().optional(),
   }),
-  
+
   contribute: z.object({
     amount: commonSchemas.amount,
     publicKey: commonSchemas.stellarAddress,
@@ -93,7 +93,7 @@ export async function validate<T>(schema: ZodSchema<T>, data: unknown): Promise<
 /**
  * Safe parse helper that returns result object instead of throwing
  */
-export function safeParse<T>(schema: ZodSchema<T>, data: unknown): 
+export function safeParse<T>(schema: ZodSchema<T>, data: unknown):
   | { success: true; data: T }
   | { success: false; error: ZodError } {
   const result = schema.safeParse(data)

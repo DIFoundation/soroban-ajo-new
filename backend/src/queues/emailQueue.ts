@@ -22,7 +22,7 @@ emailQueue.process(async (job) => {
   switch (type) {
     case 'welcome':
       return emailService.sendWelcomeEmail(data.to, data.name);
-    
+
     case 'contribution-reminder':
       return emailService.sendContributionReminder(
         data.to,
@@ -30,7 +30,7 @@ emailQueue.process(async (job) => {
         data.amount,
         data.dueDate
       );
-    
+
     case 'payout':
       return emailService.sendPayoutNotification(
         data.to,
@@ -38,7 +38,7 @@ emailQueue.process(async (job) => {
         data.amount,
         data.txHash
       );
-    
+
     case 'invitation':
       return emailService.sendGroupInvitation(
         data.to,
@@ -46,26 +46,26 @@ emailQueue.process(async (job) => {
         data.inviterName,
         data.inviteLink
       );
-    
+
     case 'weekly-summary':
       return emailService.sendWeeklySummary(data.to, data);
-    
+
     case 'receipt':
       return emailService.sendTransactionReceipt(data.to, data);
-    
+
     case 'verification':
       return emailService.sendVerificationEmail(data.to, data.token);
-    
+
     case 'custom':
       return emailService.sendEmail(data as EmailOptions);
-    
+
     default:
       throw new Error(`Unknown email type: ${type}`);
   }
 });
 
 // Queue event handlers
-emailQueue.on('completed', (job) => {
+emailQueue.on('completed', (_job) => {
   // Job completed successfully
 });
 
